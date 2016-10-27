@@ -25,8 +25,12 @@ Click the buttons on the right side of the page to download the available data s
 
 
 ##Read the Dataset
+Change the file path when working with a different computer
 ```{r cars}
-
+divvy_trips_2016_04 <- read.csv(file="C:/Users/dglownia/Documents/GitHub/CSC-465-Data-Visualization-Divvy-Final-Project/Dataset/Divvy_Trips_2016_Q1Q2/Divvy_Trips_2016_04.csv",head=TRUE,sep=",")
+divvy_trips_2016_05 <- read.csv(file="C:/Users/dglownia/Documents/GitHub/CSC-465-Data-Visualization-Divvy-Final-Project/Dataset/Divvy_Trips_2016_Q1Q2/Divvy_Trips_2016_05.csv",head=TRUE,sep=",")
+divvy_trips_2016_06 <- read.csv(file="C:/Users/dglownia/Documents/GitHub/CSC-465-Data-Visualization-Divvy-Final-Project/Dataset/Divvy_Trips_2016_Q1Q2/Divvy_Trips_2016_06.csv",head=TRUE,sep=",")
+divvy_stations_2016_q1q2 <- read.csv(file="C:/Users/dglownia/Documents/GitHub/CSC-465-Data-Visualization-Divvy-Final-Project/Dataset/Divvy_Trips_2016_Q1Q2/Divvy_Stations_2016_Q1Q2.csv",head=TRUE,sep=",")
 
 
 ```
