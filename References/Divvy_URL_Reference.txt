@@ -1,0 +1,28 @@
+Guys, these are only references.
+
+We will validate each of the URL shared here and pick one each which looks impressive and challenging to work
+
+We will do coding based on their respective comfortable programming language accordingly
+
+Also, think about one fasinating Out of the box analysis that can be made out of this dataset as weather dataset that i shared in meeting was already done and unfortunately won first place for its idea, we just missed it :P
+
+Lets hit hard and be prepared for next year now, get an interesting insight and I will get you a gift if it impresses everyone.
+
+
+Analysis that won first place last year:
+========================================
+http://www.redeyechicago.com/news/redeye-divvy-data-challenge-entry-26-20150330-htmlstory.html
+
+Analysis that won second Place:
+===============================
+For Weather Correlation [I thouhgt it was my out of the box thought, no wonder some other data scientist have already done it :I anyways, a very good reference]
+http://www.johnsavage.net/divvy.html
+
+Analysis that won third place:
+==============================
+http://transitized.com/divvy-vs-transit/
+
+Other Reports:
+==============
+http://kenschutte.com/divvy/
+
