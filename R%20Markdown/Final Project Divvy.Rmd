@@ -1,0 +1,47 @@
+---
+title: "Final Project Divvy"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Divvy Dataset
+
+Historical trip data available to the public
+Here you'll find Divvy's trip data for public use. So whether you're a policy maker, transportation professional, web developer, designer, or just plain curious, feel free to download it, map it, animate it, or bring it to life!
+Note that we'll be releasing trip data twice a year: once following the end of calendar Q2 and once following the end of calendar Q4. This data is provided according to the Divvy Data License Agreement.
+
+The Data
+Each trip is anonymized and includes:
+  *Trip start day and time
+  * Trip end day and time
+  *Trip start station
+  *Trip end station
+  *Rider type (Member or 24-Hour Pass User)
+  *If a Member trip, it will also include Member's gender and year of birth
+Click the buttons on the right side of the page to download the available data sets. The folders also include a shapefile of our stations (and you can get live station info on our station JSON feed).
+
+
+##Read the Dataset
+Change the file path when working with a different computer
+```{r cars}
+Q1 <- read.csv(file="C:/Users/ashua/Documents/GitHub/CSC-465-Data-Visualization-Divvy-Final-Project/Dataset/Divvy_Trips_2016_Q1Q2/Divvy_Trips_2016_Q1.csv",head=TRUE,sep=",")
+
+April <- read.csv(file="C:/Users/ashua/Documents/GitHub/CSC-465-Data-Visualization-Divvy-Final-Project/Dataset/Divvy_Trips_2016_Q1Q2/Divvy_Trips_2016_04.csv",head=TRUE,sep=",")
+
+May <- read.csv(file="C:/Users/ashua/Documents/GitHub/CSC-465-Data-Visualization-Divvy-Final-Project/Dataset/Divvy_Trips_2016_Q1Q2/Divvy_Trips_2016_05.csv",head=TRUE,sep=",")
+
+June <- read.csv(file="C:/Users/ashua/Documents/GitHub/CSC-465-Data-Visualization-Divvy-Final-Project/Dataset/Divvy_Trips_2016_Q1Q2/Divvy_Trips_2016_06.csv",head=TRUE,sep=",")
+
+geo <- read.csv(file="C:/Users/ashua/Documents/GitHub/CSC-465-Data-Visualization-Divvy-Final-Project/Dataset/Divvy_Trips_2016_Q1Q2/Divvy_Stations_2016_Q1Q2.csv",head=TRUE,sep=",")
+
+
+J2May <- read.csv(file="C:/Users/ashua/Documents/GitHub/CSC-465-Data-Visualization-Divvy-Final-Project/Dataset/Jan-May.csv",head=TRUE,sep=",")
+
+full <- rbind(J2May, June)
+
+
+
+```
