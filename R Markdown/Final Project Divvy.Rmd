@@ -16,7 +16,7 @@ Note that we'll be releasing trip data twice a year: once following the end of c
 The Data
 Each trip is anonymized and includes:
   *Trip start day and time
-  * Trip end day and time
+  *Trip end day and time
   *Trip start station
   *Trip end station
   *Rider type (Member or 24-Hour Pass User)
@@ -27,10 +27,127 @@ Click the buttons on the right side of the page to download the available data s
 ##Read the Dataset
 Change the file path when working with a different computer
 ```{r cars}
-divvy_trips_2016_04 <- read.csv(file="C:/Users/dglownia/Documents/GitHub/CSC-465-Data-Visualization-Divvy-Final-Project/Dataset/Divvy_Trips_2016_Q1Q2/Divvy_Trips_2016_04.csv",head=TRUE,sep=",")
-divvy_trips_2016_05 <- read.csv(file="C:/Users/dglownia/Documents/GitHub/CSC-465-Data-Visualization-Divvy-Final-Project/Dataset/Divvy_Trips_2016_Q1Q2/Divvy_Trips_2016_05.csv",head=TRUE,sep=",")
-divvy_trips_2016_06 <- read.csv(file="C:/Users/dglownia/Documents/GitHub/CSC-465-Data-Visualization-Divvy-Final-Project/Dataset/Divvy_Trips_2016_Q1Q2/Divvy_Trips_2016_06.csv",head=TRUE,sep=",")
-divvy_stations_2016_q1q2 <- read.csv(file="C:/Users/dglownia/Documents/GitHub/CSC-465-Data-Visualization-Divvy-Final-Project/Dataset/Divvy_Trips_2016_Q1Q2/Divvy_Stations_2016_Q1Q2.csv",head=TRUE,sep=",")
+Q1 <- read.csv(file="C:/Users/dglownia/Documents/GitHub/CSC-465-Data-Visualization-Divvy-Final-Project/Dataset/Divvy_Trips_2016_Q1Q2/Divvy_Trips_2016_Q1.csv",head=TRUE,sep=",")
+
+April <- read.csv(file="C:/Users/dglownia/Documents/GitHub/CSC-465-Data-Visualization-Divvy-Final-Project/Dataset/Divvy_Trips_2016_Q1Q2/Divvy_Trips_2016_04.csv",head=TRUE,sep=",")
+
+May <- read.csv(file="C:/Users/dglownia/Documents/GitHub/CSC-465-Data-Visualization-Divvy-Final-Project/Dataset/Divvy_Trips_2016_Q1Q2/Divvy_Trips_2016_05.csv",head=TRUE,sep=",")
+
+June <- read.csv(file="C:/Users/dglownia/Documents/GitHub/CSC-465-Data-Visualization-Divvy-Final-Project/Dataset/Divvy_Trips_2016_Q1Q2/Divvy_Trips_2016_06.csv",head=TRUE,sep=",")
+
+geo <- read.csv(file="C:/Users/dglownia/Documents/GitHub/CSC-465-Data-Visualization-Divvy-Final-Project/Dataset/Divvy_Trips_2016_Q1Q2/Divvy_Stations_2016_Q1Q2.csv",head=TRUE,sep=",")
 
 
 ```
+
+
+
+
+```{r}
+
+April$age <- (2016 - April$birthyear)
+
+April$TripDurationHours <- floor(April$tripduration/60)
+
+April$gender <- ifelse(April$usertype != "Customer", April$gender, 1 )
+
+April <- April[!(April$gender == 1),]
+
+April$gender <- ifelse(April$gender==2, "Female", "Male" )
+
+```
+
+
+```{r}
+
+April$TripDurationHours <- paste(floor(April$tripduration/60),"hr")
+
+April$ageCatagorical <- paste("Age: ", (floor(April$age/10) *10))
+
+```
+
+##Male vs Female ride habits
+
+```{r}
+
+library(xtable)
+library(dplyr)
+
+#Create new data frame for positive (spending) values
+gender <- April %>% select(gender, ageCatagorical, TripDurationHours, tripduration) %>%
+  group_by(gender, ageCatagorical, TripDurationHours) %>%
+  summarize(tripduration = sum(tripduration, na.rm=FALSE))
+
+```
+
+
+
+```{r}
+
+library(treemap)
+treemap(gender, #Your data frame object
+        index=c("gender","ageCatagorical", "TripDurationHours"),  #A list of your categorical variables
+        vSize = "tripduration",  #This is your quantitative variable
+        type="index", #Type sets the organization and color scheme of your treemap
+        palette = "Greens",  #Select your color palette from the RColorBrewer presets or make your own.
+        title="Male and Female Ride Habits", #Customize your title
+        fontsize.title = 14 #Change the font size of the title
+        )
+
+
+```
+
+
+
+```{r}
+library(ggplot2)
+library(maptools)
+library(rgeos)
+library(Cairo)
+library(ggmap)
+library(scales)
+library(RColorBrewer)
+set.seed(8000)
+
+##set directory to the folder where the shapefile is, then input shapefile
+setwd("/Users/slawarokicki/Dropbox/3ie Replication Project/Analysis/Shapefiles/IND_adm/")
+states.shp <- readShapeSpatial("IND_adm1.shp")
+class(states.shp)
+
+names(states.shp)
+
+print(states.shp$NAME_1)
+
+##create (or input) data to plot on map
+num.states<-length(states.shp$NAME_1)
+mydata<-data.frame(NAME_1=states.shp$NAME_1, id=states.shp$ID_1, prevalence=rnorm(num.states, 55, 20))
+head(mydata)
+
+print(mydata$id)
+
+print(states.shp$ID_1)
+
+#fortify shape file to get into dataframe 
+states.shp.f <- fortify(states.shp, region = "ID_1")
+class(states.shp.f)
+
+head(states.shp.f)
+
+#merge with coefficients and reorder
+merge.shp.coef<-merge(states.shp.f, mydata, by="id", all.x=TRUE)
+final.plot<-merge.shp.coef[order(merge.shp.coef$order), ] 
+
+ggplot() +
+  geom_polygon(data = final.plot, 
+               aes(x = long, y = lat, group = group, fill = prevalence), 
+               color = "black", size = 0.25) + 
+  coord_map()
+
+
+```
+
+
+
+
+
+

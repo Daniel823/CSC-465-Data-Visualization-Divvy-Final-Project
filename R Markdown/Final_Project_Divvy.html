@@ -127,10 +127,65 @@ $(document).ready(function () {
 <div id="read-the-dataset" class="section level2">
 <h2>Read the Dataset</h2>
 <p>Change the file path when working with a different computer</p>
-<pre class="r"><code>divvy_trips_2016_04 &lt;- read.csv(file=&quot;C:/Users/dglownia/Documents/GitHub/CSC-465-Data-Visualization-Divvy-Final-Project/Dataset/Divvy_Trips_2016_Q1Q2/Divvy_Trips_2016_04.csv&quot;,head=TRUE,sep=&quot;,&quot;)
-divvy_trips_2016_05 &lt;- read.csv(file=&quot;C:/Users/dglownia/Documents/GitHub/CSC-465-Data-Visualization-Divvy-Final-Project/Dataset/Divvy_Trips_2016_Q1Q2/Divvy_Trips_2016_05.csv&quot;,head=TRUE,sep=&quot;,&quot;)
-divvy_trips_2016_06 &lt;- read.csv(file=&quot;C:/Users/dglownia/Documents/GitHub/CSC-465-Data-Visualization-Divvy-Final-Project/Dataset/Divvy_Trips_2016_Q1Q2/Divvy_Trips_2016_06.csv&quot;,head=TRUE,sep=&quot;,&quot;)
-divvy_stations_2016_q1q2 &lt;- read.csv(file=&quot;C:/Users/dglownia/Documents/GitHub/CSC-465-Data-Visualization-Divvy-Final-Project/Dataset/Divvy_Trips_2016_Q1Q2/Divvy_Stations_2016_Q1Q2.csv&quot;,head=TRUE,sep=&quot;,&quot;)</code></pre>
+<pre class="r"><code>Q1 &lt;- read.csv(file=&quot;C:/Users/dglownia/Documents/GitHub/CSC-465-Data-Visualization-Divvy-Final-Project/Dataset/Divvy_Trips_2016_Q1Q2/Divvy_Trips_2016_Q1.csv&quot;,head=TRUE,sep=&quot;,&quot;)
+
+April &lt;- read.csv(file=&quot;C:/Users/dglownia/Documents/GitHub/CSC-465-Data-Visualization-Divvy-Final-Project/Dataset/Divvy_Trips_2016_Q1Q2/Divvy_Trips_2016_04.csv&quot;,head=TRUE,sep=&quot;,&quot;)
+
+May &lt;- read.csv(file=&quot;C:/Users/dglownia/Documents/GitHub/CSC-465-Data-Visualization-Divvy-Final-Project/Dataset/Divvy_Trips_2016_Q1Q2/Divvy_Trips_2016_05.csv&quot;,head=TRUE,sep=&quot;,&quot;)
+
+June &lt;- read.csv(file=&quot;C:/Users/dglownia/Documents/GitHub/CSC-465-Data-Visualization-Divvy-Final-Project/Dataset/Divvy_Trips_2016_Q1Q2/Divvy_Trips_2016_06.csv&quot;,head=TRUE,sep=&quot;,&quot;)
+
+geo &lt;- read.csv(file=&quot;C:/Users/dglownia/Documents/GitHub/CSC-465-Data-Visualization-Divvy-Final-Project/Dataset/Divvy_Trips_2016_Q1Q2/Divvy_Stations_2016_Q1Q2.csv&quot;,head=TRUE,sep=&quot;,&quot;)</code></pre>
+<pre class="r"><code>url &lt;- &quot;https://www.whitehouse.gov/sites/default/files/omb/budget/fy2017/assets/outlays.csv&quot;
+outlays &lt;- read.csv(url, stringsAsFactors = FALSE)</code></pre>
+<pre class="r"><code>library(xtable)</code></pre>
+<pre><code>## Warning: package 'xtable' was built under R version 3.3.2</code></pre>
+<pre class="r"><code>library(dplyr)</code></pre>
+<pre><code>## Warning: package 'dplyr' was built under R version 3.3.2</code></pre>
+<pre><code>## 
+## Attaching package: 'dplyr'</code></pre>
+<pre><code>## The following objects are masked from 'package:stats':
+## 
+##     filter, lag</code></pre>
+<pre><code>## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union</code></pre>
+<pre class="r"><code>#Remove commas from numeric values in number columns
+outlays$X2017 &lt;- gsub(&quot;,&quot;,&quot;&quot;, outlays$X2017)
+
+#Convert numeric columns to a numeric data type
+outlays$X2017 &lt;- as.numeric(outlays$X2017)
+
+#Create new data frame for positive (spending) values
+spending &lt;- outlays %&gt;% select(Agency.Name, Bureau.Name, Account.Name, X2017) %&gt;%
+  group_by(Agency.Name, Bureau.Name, Account.Name) %&gt;%
+  summarize(X2017 = sum(X2017, na.rm=FALSE)) %&gt;%
+  filter(X2017 &gt; 0)
+
+#Create new data frame for negative (income) values
+receipts &lt;- outlays %&gt;% select(Agency.Name, Bureau.Name, Account.Name, X2017) %&gt;%
+  group_by(Agency.Name, Bureau.Name, Account.Name) %&gt;%
+  summarize(X2017 = sum(X2017, na.rm=FALSE)) %&gt;%
+  filter(X2017 &lt; 0) %&gt;%
+  mutate(X2017 = abs(X2017))
+
+#Display several rows of spending data frame
+print(xtable(spending[700:709,]), type=&quot;html&quot;)</code></pre>
+<pre><code>## &lt;!-- html table generated in R 3.3.1 by xtable 1.8-2 package --&gt;
+## &lt;!-- Sat Nov 05 23:50:59 2016 --&gt;
+## &lt;table border=1&gt;
+## &lt;tr&gt; &lt;th&gt;  &lt;/th&gt; &lt;th&gt; Agency.Name &lt;/th&gt; &lt;th&gt; Bureau.Name &lt;/th&gt; &lt;th&gt; Account.Name &lt;/th&gt; &lt;th&gt; X2017 &lt;/th&gt;  &lt;/tr&gt;
+##   &lt;tr&gt; &lt;td align=&quot;right&quot;&gt; 1 &lt;/td&gt; &lt;td&gt; Department of the Interior &lt;/td&gt; &lt;td&gt; National Park Service &lt;/td&gt; &lt;td&gt; Centennial Challenge &lt;/td&gt; &lt;td align=&quot;right&quot;&gt; 54000.00 &lt;/td&gt; &lt;/tr&gt;
+##   &lt;tr&gt; &lt;td align=&quot;right&quot;&gt; 2 &lt;/td&gt; &lt;td&gt; Department of the Interior &lt;/td&gt; &lt;td&gt; National Park Service &lt;/td&gt; &lt;td&gt; Construction (and Major Maintenance) &lt;/td&gt; &lt;td align=&quot;right&quot;&gt; 320000.00 &lt;/td&gt; &lt;/tr&gt;
+##   &lt;tr&gt; &lt;td align=&quot;right&quot;&gt; 3 &lt;/td&gt; &lt;td&gt; Department of the Interior &lt;/td&gt; &lt;td&gt; National Park Service &lt;/td&gt; &lt;td&gt; Historic Preservation Fund &lt;/td&gt; &lt;td align=&quot;right&quot;&gt; 97000.00 &lt;/td&gt; &lt;/tr&gt;
+##   &lt;tr&gt; &lt;td align=&quot;right&quot;&gt; 4 &lt;/td&gt; &lt;td&gt; Department of the Interior &lt;/td&gt; &lt;td&gt; National Park Service &lt;/td&gt; &lt;td&gt; Land Acquisition and State Assistance &lt;/td&gt; &lt;td align=&quot;right&quot;&gt; 143000.00 &lt;/td&gt; &lt;/tr&gt;
+##   &lt;tr&gt; &lt;td align=&quot;right&quot;&gt; 5 &lt;/td&gt; &lt;td&gt; Department of the Interior &lt;/td&gt; &lt;td&gt; National Park Service &lt;/td&gt; &lt;td&gt; Miscellaneous Trust Funds &lt;/td&gt; &lt;td align=&quot;right&quot;&gt; 101000.00 &lt;/td&gt; &lt;/tr&gt;
+##   &lt;tr&gt; &lt;td align=&quot;right&quot;&gt; 6 &lt;/td&gt; &lt;td&gt; Department of the Interior &lt;/td&gt; &lt;td&gt; National Park Service &lt;/td&gt; &lt;td&gt; National Recreation and Preservation &lt;/td&gt; &lt;td align=&quot;right&quot;&gt; 61000.00 &lt;/td&gt; &lt;/tr&gt;
+##   &lt;tr&gt; &lt;td align=&quot;right&quot;&gt; 7 &lt;/td&gt; &lt;td&gt; Department of the Interior &lt;/td&gt; &lt;td&gt; National Park Service &lt;/td&gt; &lt;td&gt; Operation of the National Park System &lt;/td&gt; &lt;td align=&quot;right&quot;&gt; 2495000.00 &lt;/td&gt; &lt;/tr&gt;
+##   &lt;tr&gt; &lt;td align=&quot;right&quot;&gt; 8 &lt;/td&gt; &lt;td&gt; Department of the Interior &lt;/td&gt; &lt;td&gt; National Park Service &lt;/td&gt; &lt;td&gt; Other Permanent Appropriations &lt;/td&gt; &lt;td align=&quot;right&quot;&gt; 192000.00 &lt;/td&gt; &lt;/tr&gt;
+##   &lt;tr&gt; &lt;td align=&quot;right&quot;&gt; 9 &lt;/td&gt; &lt;td&gt; Department of the Interior &lt;/td&gt; &lt;td&gt; National Park Service &lt;/td&gt; &lt;td&gt; Recreation Fee Permanent Appropriations &lt;/td&gt; &lt;td align=&quot;right&quot;&gt; 219000.00 &lt;/td&gt; &lt;/tr&gt;
+##   &lt;tr&gt; &lt;td align=&quot;right&quot;&gt; 10 &lt;/td&gt; &lt;td&gt; Department of the Interior &lt;/td&gt; &lt;td&gt; National Park Service &lt;/td&gt; &lt;td&gt; Urban Park and Recreation Fund &lt;/td&gt; &lt;td align=&quot;right&quot;&gt; 2000.00 &lt;/td&gt; &lt;/tr&gt;
+##    &lt;/table&gt;</code></pre>
 </div>
 
 
