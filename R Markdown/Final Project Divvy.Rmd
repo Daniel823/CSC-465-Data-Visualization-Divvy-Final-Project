@@ -1,5 +1,5 @@
 ---
-title: "Final Project Divvy"
+title: "Homework 3"
 output: html_document
 ---
 
@@ -27,16 +27,10 @@ Click the buttons on the right side of the page to download the available data s
 ##Read the Dataset
 Change the file path when working with a different computer
 ```{r cars}
-Q1 <- read.csv(file="C:/Users/dglownia/Documents/GitHub/CSC-465-Data-Visualization-Divvy-Final-Project/Dataset/Divvy_Trips_2016_Q1Q2/Divvy_Trips_2016_Q1.csv",head=TRUE,sep=",")
 
-April <- read.csv(file="C:/Users/dglownia/Documents/GitHub/CSC-465-Data-Visualization-Divvy-Final-Project/Dataset/Divvy_Trips_2016_Q1Q2/Divvy_Trips_2016_04.csv",head=TRUE,sep=",")
+April = read.table("C:/Users/dglownia/Desktop/divvy_merge.txt",  header = TRUE)
 
-May <- read.csv(file="C:/Users/dglownia/Documents/GitHub/CSC-465-Data-Visualization-Divvy-Final-Project/Dataset/Divvy_Trips_2016_Q1Q2/Divvy_Trips_2016_05.csv",head=TRUE,sep=",")
-
-June <- read.csv(file="C:/Users/dglownia/Documents/GitHub/CSC-465-Data-Visualization-Divvy-Final-Project/Dataset/Divvy_Trips_2016_Q1Q2/Divvy_Trips_2016_06.csv",head=TRUE,sep=",")
-
-geo <- read.csv(file="C:/Users/dglownia/Documents/GitHub/CSC-465-Data-Visualization-Divvy-Final-Project/Dataset/Divvy_Trips_2016_Q1Q2/Divvy_Stations_2016_Q1Q2.csv",head=TRUE,sep=",")
-
+#April <- read.csv(file="C:/Users/dglownia/Documents/GitHub/CSC-465-Data-Visualization-Divvy-Final-Project/Dataset/Divvy_Trips_2016_Q1Q2/Divvy_Trips_2016_04.csv",head=TR#UE,sep=",")
 
 ```
 
@@ -78,6 +72,10 @@ gender <- April %>% select(gender, ageCatagorical, TripDurationHours, tripdurati
   group_by(gender, ageCatagorical, TripDurationHours) %>%
   summarize(tripduration = sum(tripduration, na.rm=FALSE))
 
+age <- April %>% select(gender, TripDurationHours, tripduration) %>%
+  group_by(gender, TripDurationHours) %>%
+  summarize(tripduration = sum(tripduration, na.rm=FALSE))
+
 ```
 
 
@@ -89,65 +87,75 @@ treemap(gender, #Your data frame object
         index=c("gender","ageCatagorical", "TripDurationHours"),  #A list of your categorical variables
         vSize = "tripduration",  #This is your quantitative variable
         type="index", #Type sets the organization and color scheme of your treemap
-        palette = "Greens",  #Select your color palette from the RColorBrewer presets or make your own.
+        palette = "Pastel1",  #Select your color palette from the RColorBrewer presets or make your own.
         title="Male and Female Ride Habits", #Customize your title
         fontsize.title = 14 #Change the font size of the title
         )
 
 
+
 ```
 
+##Food Services
+
+```{r}
+
+food = read.csv(file="C:/Users/dglownia/Desktop/food.csv",head=TRUE,sep=",")
+states = read.csv(file="C:/Users/dglownia/Desktop/states.csv",head=TRUE,sep=",")
+
+region = tolower(states$ALASKA)
+value97 = states$X1763
+value00 = states$X1849
+value07 = states$X1996
+
+foodservices97 = data.frame(region, value97 )
+foodservices97 <- unique(foodservices)
+
+foodservices00 = data.frame(region, value00 )
+foodservices00 <- unique(foodservices)
+
+foodservices07 = data.frame(region, value07 )
+foodservices07 <- unique(foodservices)
+```
 
 
 ```{r}
-library(ggplot2)
-library(maptools)
-library(rgeos)
-library(Cairo)
-library(ggmap)
-library(scales)
-library(RColorBrewer)
-set.seed(8000)
 
-##set directory to the folder where the shapefile is, then input shapefile
-setwd("/Users/slawarokicki/Dropbox/3ie Replication Project/Analysis/Shapefiles/IND_adm/")
-states.shp <- readShapeSpatial("IND_adm1.shp")
-class(states.shp)
+library(choroplethr)
 
-names(states.shp)
+?df_pop_state
+data(df_pop_state)
 
-print(states.shp$NAME_1)
-
-##create (or input) data to plot on map
-num.states<-length(states.shp$NAME_1)
-mydata<-data.frame(NAME_1=states.shp$NAME_1, id=states.shp$ID_1, prevalence=rnorm(num.states, 55, 20))
-head(mydata)
-
-print(mydata$id)
-
-print(states.shp$ID_1)
-
-#fortify shape file to get into dataframe 
-states.shp.f <- fortify(states.shp, region = "ID_1")
-class(states.shp.f)
-
-head(states.shp.f)
-
-#merge with coefficients and reorder
-merge.shp.coef<-merge(states.shp.f, mydata, by="id", all.x=TRUE)
-final.plot<-merge.shp.coef[order(merge.shp.coef$order), ] 
-
-ggplot() +
-  geom_polygon(data = final.plot, 
-               aes(x = long, y = lat, group = group, fill = prevalence), 
-               color = "black", size = 0.25) + 
-  coord_map()
+?state_choropleth
+state_choropleth(df_pop_state)
 
 
 ```
 
+```{r}
 
+data(df_pop_state)
+state_choropleth(foodservices97, 
+                 title  = "US Food Services 1997", 
+                 legend = "Food Services by number")
 
+```
 
+```{r}
 
+data(df_pop_state)
+state_choropleth(foodservices00, 
+                 title  = "US Food Services 2000", 
+                 legend = "Food Services by number")
+
+```
+
+```{r}
+
+data(df_pop_state)
+state_choropleth(foodservices07, 
+                 title  = "US Food Services 1997", 
+                 legend = "Food Services by number")
+
+```
 
